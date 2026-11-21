@@ -1,0 +1,42 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global default-deny catch-all: explicitly deny everything unless allowed below
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null && request.auth.uid != null && request.auth.uid.size() > 0;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && !id.matches('.*[/\\\\].*');
+    }
+
+    // Server-verified Soyken Premium entitlement document.
+    // Users may ONLY read their own 'premium' entitlement document.
+    // All create/update/delete operations are strictly denied to clients and
+    // performed exclusively by Firebase Cloud Functions (Admin SDK) after
+    // Google Play Developer API Subscriptions V2 verification.
+    match /users/{userId}/entitlements/{entitlementId} {
+      allow get: if isValidId(userId)
+        && isValidId(entitlementId)
+        && isOwner(userId)
+        && entitlementId == 'premium';
+      allow list: if isValidId(userId) && isOwner(userId);
+      allow create, update, delete: if false;
+    }
+
+    // Server-only purchaseToken hash -> Firebase UID mapping for RTDN webhook.
+    // Never readable or writable by any client.
+    match /play_purchase_tokens/{tokenHash} {
+      allow read, write: if false;
+    }
+  }
+}

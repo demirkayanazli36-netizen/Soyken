@@ -1,0 +1,6 @@
+{
+  "name": "Soyken Play",
+  "description": "M3U oynatma listesi yöneticisi, kategori filtreleme, favoriler, yayın akışı ve bildirim destekli modern IPTV uygulaması",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

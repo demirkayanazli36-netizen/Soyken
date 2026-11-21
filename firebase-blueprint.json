@@ -1,0 +1,99 @@
+{
+  "entities": {
+    "PremiumEntitlement": {
+      "title": "PremiumEntitlement",
+      "description": "Server-verified Google Play Premium subscription entitlement for a signed-in Soyken Play user. Strictly read-only for the owning user; written exclusively by Firebase Cloud Functions (Admin SDK) after verifying with Google Play Developer API Subscriptions V2.",
+      "type": "object",
+      "properties": {
+        "active": {
+          "type": "boolean",
+          "description": "Whether the user currently holds an active Soyken Premium entitlement."
+        },
+        "subscriptionState": {
+          "type": "string",
+          "description": "Google Play Subscriptions V2 state (e.g., SUBSCRIPTION_STATE_ACTIVE, SUBSCRIPTION_STATE_IN_GRACE_PERIOD, SUBSCRIPTION_STATE_CANCELED, SUBSCRIPTION_STATE_ON_HOLD, SUBSCRIPTION_STATE_EXPIRED, INACTIVE)."
+        },
+        "productId": {
+          "type": "string",
+          "description": "Google Play subscription product ID (soyken_premium)."
+        },
+        "basePlanId": {
+          "type": "string",
+          "description": "Active base plan ID (monthly or yearly)."
+        },
+        "expiryTimeMillis": {
+          "type": "integer",
+          "description": "Subscription expiry timestamp in epoch milliseconds."
+        },
+        "autoRenewing": {
+          "type": "boolean",
+          "description": "Whether the subscription is currently set to auto-renew."
+        },
+        "orderId": {
+          "type": "string",
+          "description": "Latest Google Play order ID associated with the subscription."
+        },
+        "verifiedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of the last Google Play Developer API verification."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of the last document update."
+        }
+      },
+      "required": [
+        "active",
+        "subscriptionState",
+        "productId",
+        "basePlanId",
+        "expiryTimeMillis",
+        "autoRenewing"
+      ]
+    },
+    "PlayPurchaseTokenMapping": {
+      "title": "PlayPurchaseTokenMapping",
+      "description": "Server-only mapping from SHA-256 purchaseToken hash to Firebase UID used by RTDN Pub/Sub webhook to synchronize subscription lifecycle events. Completely inaccessible to clients.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Owning Firebase Auth UID."
+        },
+        "productId": {
+          "type": "string",
+          "description": "Google Play subscription product ID."
+        },
+        "basePlanId": {
+          "type": "string",
+          "description": "Google Play base plan ID."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of the last update."
+        }
+      },
+      "required": [
+        "uid",
+        "productId"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/entitlements/{entitlementId}": {
+      "schema": {
+        "$ref": "#/entities/PremiumEntitlement"
+      },
+      "description": "User's server-verified Premium entitlement document (canonical document ID: 'premium'). Readable only by the authenticated owner; all client writes are denied."
+    },
+    "/play_purchase_tokens/{tokenHash}": {
+      "schema": {
+        "$ref": "#/entities/PlayPurchaseTokenMapping"
+      },
+      "description": "Server-only lookup index for Google Play RTDN purchase tokens. All client reads and writes are denied."
+    }
+  }
+}

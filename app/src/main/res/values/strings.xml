@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Soyken Play</string>
+    <string name="action_report_issue">Sorun Bildir</string>
+    <string name="report_issue_title">Yayın Sorunu Bildir</string>
+    <string name="report_issue_send_button">Bildirimi Gönder</string>
+    <string name="report_issue_note_placeholder">Eklemek istediğiniz not (isteğe bağlı)...</string>
+    <string name="premium_title">Soyken Premium</string>
+    <string name="premium_subtitle">4K Ultra HD, Turbo bağlantı, sınırsız M3U listesi, PiP ve daha fazlası</string>
+    <string name="premium_sign_in_google">Google ile Giriş Yap</string>
+    <string name="premium_manage_play">Google Play\'de Yönet</string>
+    <string name="premium_restore_purchases">Satın Almaları Geri Yükle</string>
+</resources>
